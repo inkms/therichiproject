@@ -1,0 +1,4 @@
+#ifndef _CARGA_INTERFACE_H
+#define _CARGA_INTERFACE_H
+
+#endif // _CARGA_INTERFACE_H
