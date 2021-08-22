@@ -21,6 +21,7 @@ SRCS_CORE = \
 SRCS_TEST = \
 	$(TDIR)/unittestmain.cpp\
 	$(TDIR)/cargas_test.cpp\
+	$(TDIR)/cajas_test.cpp\
 
 OBJS_CORE = $(SRCS_CORE:$(SDIR)/%.cpp=$(ODIR)/%.o)
 OBJS_TEST = $(SRCS_TEST:$(TDIR)/%.cpp=$(ODIR)/%.o)

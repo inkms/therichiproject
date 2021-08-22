@@ -6,6 +6,9 @@ Caja::Caja(std::string nombre) : Caja(nombre, nullptr) {}
 Caja::Caja(std::string nombre, Caja* madre) : m_id(Elemento::m_contador++), m_nombre(nombre), m_madre(madre) {}
 
 bool Caja::completamenteDefinido() {
+    if (m_hijos.empty()) {
+        return false;
+    }
     for (auto it = m_hijos.begin(); it < m_hijos.end(); it++) {
         if (!(*it)->completamenteDefinido()) {
             return false;
@@ -24,18 +27,24 @@ double Caja::cargaEquivalente() {
 
 void Caja::setMadre(Caja* madre) {
     m_madre = madre;
+    madre->addCaja(this);
 }
 
-void Caja::addCarga(std::string nombre, double potencia) {
+CargaInterfaz* Caja::addCarga(std::string nombre, double potencia) {
     CargaPersonalizada* carga = new CargaPersonalizada(nombre, potencia);
     m_hijos.push_back(carga);
-    return; // PENDIENTE, cuando tengamos la fabrica, mejoramos
+    return carga; // PENDIENTE, cuando tengamos la fabrica, mejoramos
 }
 
-void Caja::addCaja(std::string nombre) {
-    Caja* caja = new Caja(nombre);
+Caja* Caja::addCaja(std::string nombre) {
+    Caja* caja = new Caja(nombre, this);
     m_hijos.push_back(caja);
-    return;
+    return caja;
+}
+
+Caja* Caja::addCaja(Caja* hijo) {
+    m_hijos.push_back(hijo);
+    return hijo;
 }
 
 bool Caja::delElemento(int id) {
@@ -66,4 +75,22 @@ void Caja::setNombre(const std::string nombre) {
 
 int Caja::getId() const {
     return m_id;
+}
+
+Elemento* Caja::getHijo(int id) const {
+    for (auto it = m_hijos.begin(); it < m_hijos.end(); it++) {
+        if ((*it)->getId()==id ) {
+            return *it;
+        }
+    }
+    return nullptr; //No se ha encontrado el elemento
+}
+
+Elemento* Caja::getHijo(std::string nombre) const {
+    for (auto it = m_hijos.begin(); it < m_hijos.end(); it++) {
+        if ((*it)->getNombre()==nombre ) {
+            return *it;
+        }
+    }
+    return nullptr; //No se ha encontrado el elemento
 }
