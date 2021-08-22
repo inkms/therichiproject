@@ -12,15 +12,16 @@ class Caja: public Elemento {
         bool esCaja() { return true; }
         double cargaEquivalente();
         void setMadre(Caja* madre);
-        void addCarga();
-        void addCaja();
-        void delCarga(int id);
-        void delCaja(int id);
+        void addCarga(std::string nombre, double potencia);
+        void addCaja(std::string nombre);
+        bool delCarga(int id);
+        bool delCaja(int id);
         std::string getNombre() const;
         void setNombre(const std::string nombre);
         int getId() const;
     private:
-        std::vector<Elemento> m_hijos;
+        bool delElemento (int id);
+        std::vector<Elemento*> m_hijos;
         int m_id;
         std::string m_nombre;
         Caja* m_madre;

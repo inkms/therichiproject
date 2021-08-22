@@ -1,4 +1,5 @@
 #include "../include/caja.h"
+#include "../include/carga_personalizada.h" //Cuando haya factory, quitamos esto
 
 Caja::Caja(std::string nombre) : Caja(nombre, nullptr) {}
 
@@ -6,7 +7,7 @@ Caja::Caja(std::string nombre, Caja* madre) : m_id(Elemento::m_contador++), m_no
 
 bool Caja::completamenteDefinido() {
     for (auto it = m_hijos.begin(); it < m_hijos.end(); it++) {
-        if (!it->completamenteDefinido()) {
+        if (!(*it)->completamenteDefinido()) {
             return false;
         }
     }
@@ -16,7 +17,7 @@ bool Caja::completamenteDefinido() {
 double Caja::cargaEquivalente() {
     double equivalente = 0;
     for (auto it = m_hijos.begin(); it < m_hijos.end(); it++) {
-        equivalente += it->cargaEquivalente();
+        equivalente += (*it)->cargaEquivalente();
     }
     return equivalente;
 }
@@ -25,19 +26,32 @@ void Caja::setMadre(Caja* madre) {
     m_madre = madre;
 }
 
-void Caja::addCarga() {
-    return; // PENDIENTE
+void Caja::addCarga(std::string nombre, double potencia) {
+    m_hijos.push_back(&CargaPersonalizada(nombre, potencia));
+    return; // PENDIENTE, cuando tengamos la fabrica, mejoramos
 }
 
-void Caja::addCaja() {
-    return; //PENDIENTE
+void Caja::addCaja(std::string nombre) {
+    m_hijos.push_back(&Caja(nombre));
+    return;
 }
 
-void Caja::delCarga(int id) {
-    return; //PENDIENTE
+bool Caja::delElemento(int id) {
+    for (auto it = m_hijos.begin(); it < m_hijos.end(); it++) {
+        if ((*it)->getId()==id ) {
+            m_hijos.erase(it);
+            return true; //Se ha encontrado el elemento
+        }
+    }
+    return false; //No se ha encontrado el elemento
 }
-void Caja::delCaja(int id) {
-    return; //PENDIENTE
+
+bool Caja::delCarga(int id) {
+    return delElemento(id);
+}
+
+bool Caja::delCaja(int id) {
+    return delElemento(id);
 }
 std::string Caja::getNombre() const {
     return m_nombre;
