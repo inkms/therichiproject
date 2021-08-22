@@ -34,3 +34,4 @@
 #Cacas
 .vscode
 bin/*
+run_tests
