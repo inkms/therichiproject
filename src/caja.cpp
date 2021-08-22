@@ -27,20 +27,23 @@ void Caja::setMadre(Caja* madre) {
 }
 
 void Caja::addCarga(std::string nombre, double potencia) {
-    m_hijos.push_back(&CargaPersonalizada(nombre, potencia));
+    CargaPersonalizada* carga = new CargaPersonalizada(nombre, potencia);
+    m_hijos.push_back(carga);
     return; // PENDIENTE, cuando tengamos la fabrica, mejoramos
 }
 
 void Caja::addCaja(std::string nombre) {
-    m_hijos.push_back(&Caja(nombre));
+    Caja* caja = new Caja(nombre);
+    m_hijos.push_back(caja);
     return;
 }
 
 bool Caja::delElemento(int id) {
     for (auto it = m_hijos.begin(); it < m_hijos.end(); it++) {
         if ((*it)->getId()==id ) {
+            delete *it;
             m_hijos.erase(it);
-            return true; //Se ha encontrado el elemento
+            return true; //Se ha encontrado el elementos
         }
     }
     return false; //No se ha encontrado el elemento
