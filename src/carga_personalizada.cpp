@@ -1,7 +1,7 @@
 #include "../include/carga_personalizada.h"
 
 bool CargaPersonalizada::completamenteDefinido() {
-if (!m_potencia) {
+if (m_potencia) {
         return true;
     }
     return false;
@@ -27,6 +27,10 @@ std::string CargaPersonalizada::getNombre() const {
 
 void CargaPersonalizada::setNombre(const std::string nombre) {
     m_nombre = nombre;
+}
+
+void CargaPersonalizada::setPotencia(const double potencia) {
+    m_potencia = potencia;
 }
 
 int CargaPersonalizada::getId() const {

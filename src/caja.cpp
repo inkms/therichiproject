@@ -43,7 +43,7 @@ bool Caja::delElemento(int id) {
         if ((*it)->getId()==id ) {
             delete *it;
             m_hijos.erase(it);
-            return true; //Se ha encontrado el elementos
+            return true; //Se ha encontrado el elemento
         }
     }
     return false; //No se ha encontrado el elemento

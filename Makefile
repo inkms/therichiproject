@@ -1,30 +1,56 @@
-SRC_DIR := src
-OBJ_DIR := obj
-BIN_DIR := bin
+SDIR := src
+ODIR := obj
+IDIR := include
+TDIR := test
 
-EXE := $(BIN_DIR)/therichiproject
-SRC := $(wildcard $(SRC_DIR)/*.cpp)
-OBJ := $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+CXXFLAGS = -O1 -fPIC -std=c++11 -MMD -MP
+CXXFLAGS += -I. -I$(IDIR)
+CXXFLAGS += -Wall -Wextra -Wno-unused-parameter
+DFLAGS = -g
 
-CPPFLAGS := -Iinclude -MMD -MP
-CXXFLAGS := -std=c++11 -Wall -Wextra
-LDFLAGS := -Llib
-LDLIBS := -lm
+LIBS = -lm
 
-.PHONY: all clean
+STATIC_LIB_TARGET = libdynaacore.a
 
-all: $(EXE)
+SRCS_CORE = \
+	$(SDIR)/caja.cpp\
+	$(SDIR)/carga_personalizada.cpp\
+	$(SDIR)/elemento.cpp\
+	$(SDIR)/main.cpp\
 
-$(EXE): $(OBJ) | $(BIN_DIR)
-	$(CXX) $(LDFLAGS) $^ $(LDLIBS) -o $@
+SRCS_TEST = \
+	$(TDIR)/unittestmain.cpp\
+	$(TDIR)/cargas_test.cpp\
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+OBJS_CORE = $(SRCS_CORE:$(SDIR)/%.cpp=$(ODIR)/%.o)
+OBJS_TEST = $(SRCS_TEST:$(TDIR)/%.cpp=$(ODIR)/%.o)
 
-$(BIN_DIR) $(OBJ_DIR):
-	mkdir -p $@
+$(ODIR)/%.o: $(TDIR)/%.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $< 
+
+$(ODIR)/%.o: $(SDIR)/%.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+.PHONY: all staticlib tests runtests clean
+
+all: staticlib runtests
+
+staticlib: $(OBJS_CORE)
+	@echo -e "\n*** Building static library ($(STATIC_LIB_TARGET))"
+	ar -cr $(STATIC_LIB_TARGET) $(OBJS_CORE)
+
+tests: $(OBJS_TEST)
+	@echo -e "\n*** Building unit tests for ($(STATIC_LIB_TARGET))"
+	$(CXX) $(CXXFLAGS) $(DFLAGS) -o run_tests $^ $(LIBS) -L. $(STATIC_LIB_TARGET)
+
+runtests: tests
+	@echo -e "\n*** Running all unit tests"
+	-./run_tests
 
 clean:
-	@$(RM) -rv $(BIN_DIR) $(OBJ_DIR)
+	/bin/rm -f $(OBJS_CORE) $(OBJS_TEST) $(OBJS_CORE:%.o=%.d) $(OBJS_TEST:%.o=%.d)
+	/bin/rm -f ./$(STATIC_LIB_TARGET)
+	/bin/rm -f ./run_tests
+
 
 -include $(OBJS_CORE:%.o=%.d) $(OBJS_TEST:%.o=%.d)

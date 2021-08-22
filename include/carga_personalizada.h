@@ -14,6 +14,7 @@ class CargaPersonalizada: public CargaInterfaz {
         double cargaEquivalente();
         std::string getNombre() const;
         void setNombre(const std::string nombre);
+        void setPotencia(const double potencia);
         int getId() const;
 };
 
