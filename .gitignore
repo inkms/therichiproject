@@ -31,6 +31,6 @@
 *.out
 *.app
 
-#VS code files
+#Cacas
 .vscode
 bin/*
